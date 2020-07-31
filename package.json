@@ -1,0 +1,20 @@
+{
+	"name": "ugc-bot",
+	"version": "1.0.0",
+	"description": "A bot for UGC.",
+	"main": "catalog.js",
+	"scripts": {
+		"test": "node bot",
+		"start": "node catalog.js"
+	},
+	"author": "unix_system",
+	"dependencies": {
+		"aws-sdk": "^2.724.0",
+		"discord.js": "^11.3.2",
+		"discord.js-commando": "^0.10.0",
+		"dotenv": "^8.2.0",
+		"node-fetch": "^2.6.0",
+		"sleep": "^6.3.0",
+		"sqlite": "^2.9.2"
+	}
+}
