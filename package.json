@@ -2,10 +2,9 @@
 	"name": "ugc-bot",
 	"version": "1.0.0",
 	"description": "A bot for UGC.",
-	"main": "catalog.js",
 	"scripts": {
 		"test": "node bot",
-		"start": "node catalog.js"
+		"start": "node bot.js"
 	},
 	"author": "unix_system",
 	"dependencies": {

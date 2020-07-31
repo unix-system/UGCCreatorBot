@@ -63,7 +63,7 @@ async function normaliseDbData(data) {
     return normalData;
 }
 
-async function crawlCatalog() {
+module.exports = async function crawlCatalog() {
     let newEntries = {};
     let count = 0;
     let changedData = [];
@@ -195,6 +195,5 @@ async function crawlCatalog() {
             }
         }
     }
+    console.log("Completed sweep!");
 }
-
-crawlCatalog();

@@ -3,9 +3,9 @@ require('dotenv').config();
 const commando = require('discord.js-commando');
 const path = require('path');
 const oneLine = require('common-tags').oneLine;
-const token = process.env.DISCORD_TOKEN;
 
 const db = require('./database');
+const catalog = require('./catalog');
 
 const client = new commando.Client({
   owner: '128171859245006848',
@@ -41,4 +41,4 @@ client.registry
   .registerTypesIn(path.join(__dirname, 'types'))
   .registerCommandsIn(path.join(__dirname, 'commands'));
 
-client.login(token);
+client.login('token');
