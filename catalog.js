@@ -2,6 +2,7 @@
 
 const fetch = require('node-fetch');
 const sleep = require('sleep');
+const fs = require('fs');
 
 const db = require('./database');
 
@@ -54,8 +55,10 @@ async function normaliseDbData(data) {
         const element = data[key];
         if (element.N) {
             normalData[key] = parseInt(element.N);
+        } else if (element.BOOL) {
+            normalData[key] = element.BOOL;
         } else {
-            console.log(element);
+            //console.log(element);
             normalData[key] = element.S;
         }
     }
@@ -68,6 +71,8 @@ module.exports = async function crawlCatalog() {
     let count = 0;
     let changedData = [];
 
+    let data_base = [];
+
     let currentCursor = "";
     
     while (currentCursor !== null) {
@@ -76,11 +81,14 @@ module.exports = async function crawlCatalog() {
             if (currentCursor !== "" && currentCursor !== null) {
                 url += '&cursor=' + currentCursor;
             }
+            console.log("Fetching...");
             const response = await fetch(url);
             if (response) {
                 const data = await response.json();
 
                 if (data && data.data) {
+                    console.log("Current cursor = " + currentCursor);
+                    console.log("Next cursor = " + data.nextPageCursor);
                     currentCursor = data.nextPageCursor;
                     let normalisedData = [];
                     for (const asset of data.data) {
@@ -92,6 +100,7 @@ module.exports = async function crawlCatalog() {
                     const dbData = await db.bulkGet('UGCItemData', normalisedData);
                     if (dbData && dbData.Responses && dbData.Responses.UGCItemData) {
                         for (const asset of data.data) {
+                            
                             let isIn = false;
                             let pulledData;
                             for (const dbAsset of dbData.Responses.UGCItemData) {
@@ -102,23 +111,21 @@ module.exports = async function crawlCatalog() {
                                 }
                             }
                             if (isIn) {
-                                console.log("IsIn");
                                 let marketData = await getNormalisedMarketData(asset.id);
                                 let changes = {};
                                 if (marketData) {
-                                    console.log("got market data");
-                                    console.log(pulledData);
+                                    data_base.push(marketData);
                                     for (const key in marketData) {
                                             const element = marketData[key];
                                             if (!(key in exemptData) && pulledData[key] !== element) {
                                                 console.log("Change detected!");;
-                                                console.log(`${key} changed from '${pulledData[key]}' to '${element}'`);
+                                                //console.log(`${key} changed from '${pulledData[key]}' to '${element}'`);
                                                 changes[key] = {before: pulledData[key], after: element};
                                             }
                                         }
                                     }
                                 if(changes === {}) {
-                                    console.log("No change detected");
+                                    //console.log("No change detected");
                                 } else {
                                     changedData.push({ id: asset.id, changes: changes });
                                 }
@@ -129,7 +136,7 @@ module.exports = async function crawlCatalog() {
                         }
                     }
                 }
-                sleep.sleep(1);
+                //sleep.sleep(1);
             } else {
                 console.warn("No response!")
             }
@@ -179,7 +186,7 @@ module.exports = async function crawlCatalog() {
     if (changedData.length > 0) {
         for (const data of changedData) {
             for (const key in data.changes) {
-                console.log(data.changes[key]);
+                //console.log(data.changes[key]);
                 let updateFormat = {
                     UpdateExpression: "set #k = :v",
                     ExpressionAttributeValues: {
@@ -191,9 +198,13 @@ module.exports = async function crawlCatalog() {
                 };
                 
                 let d = await db.update('UGCItemData', { asset_id: data.id }, updateFormat);
-                console.log(d);
+                //console.log(d);
             }
         }
     }
     console.log("Completed sweep!");
+    // fs.writeFile('output.json', JSON.stringify(data_base), function (err) {
+    //     if (err) return console.log(err);
+    //     console.log('Hello World > helloworld.txt');
+    //   });
 }
