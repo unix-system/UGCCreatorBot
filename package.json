@@ -11,7 +11,11 @@
 		"discord.js": "^11.3.2",
 		"discord.js-commando": "^0.10.0",
 		"dotenv": "^8.2.0",
+		"dynamodb-data-types": "^3.0.1",
 		"node-fetch": "^2.6.0",
 		"sleep": "^6.3.0"
+	},
+	"devDependencies": {
+		"eslint": "^7.6.0"
 	}
 }

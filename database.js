@@ -78,7 +78,6 @@ module.exports = new class db {
             };
 
             params.RequestItems[table] = keys;
-
             
             dbClient.batchWriteItem(params, function(err, data) {
                 if (err) {
