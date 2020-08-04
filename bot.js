@@ -37,7 +37,7 @@ client
 client.registry
   .registerGroup('util', 'Utility')
   .registerDefaults()
-  .registerTypesIn(path.join(__dirname, 'types'))
-  .registerCommandsIn(path.join(__dirname, 'commands'));
+  //.registerTypesIn(path.join(__dirname, 'types'))
+  //.registerCommandsIn(path.join(__dirname, 'commands'));
 
 client.login(process.env.DISCORD_TOKEN);
