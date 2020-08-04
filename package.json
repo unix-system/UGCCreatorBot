@@ -3,8 +3,7 @@
 	"version": "1.0.0",
 	"description": "A bot for UGC.",
 	"scripts": {
-		"test": "node bot",
-		"start": "node bot.js"
+		"start": "node shard.js"
 	},
 	"author": "unix_system",
 	"dependencies": {
