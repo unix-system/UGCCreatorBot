@@ -9,7 +9,8 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.get('/pub/api/get_json', async (req, res) => {
-  res.send(JSON.stringify(await catalog.pullEntireList()));
+    res.type('.json');
+    res.send(JSON.stringify(await catalog.pullEntireList()));
 })
 
 app.get('/pub/api/top_50_leaderboard', async (req, res) => {
