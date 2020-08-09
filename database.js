@@ -16,6 +16,9 @@ AWS.config.getCredentials(function(err) {
   }
 });
 
+
+
+
 module.exports = new class db {
 
     get(table, key) {
@@ -48,6 +51,36 @@ module.exports = new class db {
             });
         });
     }
+
+    async scan(tableName) {
+        let list = [];
+        let params = {
+            TableName: tableName
+        };
+        return new Promise((resolve, reject) => {
+            function onScan(err, data) {
+                if (err) {
+                    return reject(err);
+                } else {
+                    console.log("Scan succeeded.");
+                    console.log(data.Items.length);
+                    data.Items.forEach(function(item) {
+                        list.push(item);
+                    });
+                    if (typeof data.LastEvaluatedKey != "undefined") {
+                        console.log("Scanning for more...");
+                        params.ExclusiveStartKey = data.LastEvaluatedKey;
+                        docClient.scan(params, onScan);
+                    } else {
+                        return resolve(list);
+                    }
+                }
+            }
+            docClient.scan(params, onScan);
+        })
+    
+    }
+    
 
     bulkGet(table, keys, projection) {
         return new Promise( (resolve,reject) => {

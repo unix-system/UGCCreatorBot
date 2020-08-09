@@ -234,4 +234,8 @@ module.exports = new class Catalog {
     async runCatalog() {
         return await getCatalog();
     }
+
+    async pullEntireList() {
+        return await db.scan('UGCItemData');
+    }
 }
