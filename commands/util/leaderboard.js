@@ -1,17 +1,40 @@
 const { Command } = require('discord.js-commando');
 const db = require('../../database');
+const catalog = require('../../catalog');
 
-module.exports = class MeowCommand extends Command {
+
+let leaderboardMsg = {};
+module.exports = class LeaderboardCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'meow',
-			group: 'first',
-			memberName: 'meow',
-			description: 'Replies with a meow, kitty cat.',
+			name: 'leaderboard',
+			group: 'util',
+			memberName: 'leaderboard',
+			description: 'Replies with a leaderboard of the top 50 players',
 		});
 	}
 
-	run(message) {
-		
+	async run(message) {
+		if (!leaderboardMsg.timestamp || (new Date().now - leaderboardMsg.timestamp >= (1000 * 60)) ) {
+			delete leaderboardMsg.timestamp;
+			let data = await catalog.pullEntireList();
+			if (data) {
+				data.sort(function(a, b){
+					return b.purchaseCount - a.purchaseCount;
+				});
+				let output = data.slice(0, 49);
+				let strMessage = `**Top 50:**\n`
+				let c = 0;
+				for (const item of output) {
+					c++;
+					strMessage = strMessage + `${c}. ${item.name} **(by ${item.creatorName})** - ${item.purchaseCount} sales`
+				}
+				leaderboardMsg.timestamp = new Date().now;
+				leaderboardMsg.message = strMessage;
+			}
+		}
+		if (leaderboardMsg.timestamp) {
+			message.reply(leaderboardMsg.message);
+		}
 	}
 };
