@@ -8,18 +8,13 @@ const db = require('./database');
 
 const client = new commando.Client({
   owner: '128171859245006848',
-  commandPrefix: '~ugc'
+  commandPrefix: '~'
 });
 
 client
   .on('error', console.error)
   .on('ready', async () => {
     console.log(`Client ready; logged in as ${client.user.username}#${client.user.discriminator} (${client.user.id})`);
-    db.get('UGCServerSettings', {
-      server_id: '123'
-    }).then(function(data) {
-      console.log(data);
-    }).catch(console.error);
   })
   .on('disconnect', () => { console.warn('Disconnected!'); })
   .on('reconnecting', () => { console.warn('Reconnecting...'); })
@@ -37,7 +32,8 @@ client
 client.registry
   .registerGroup('util', 'Utility')
   .registerDefaults()
+  .registerCommandsIn(path.join(__dirname, 'commands'));
   //.registerTypesIn(path.join(__dirname, 'types'))
-  //.registerCommandsIn(path.join(__dirname, 'commands'));
+  
 
 client.login(process.env.DISCORD_TOKEN);

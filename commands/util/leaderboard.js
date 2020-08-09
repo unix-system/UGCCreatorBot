@@ -1,7 +1,6 @@
 const { Command } = require('discord.js-commando');
 const db = require('../../database');
-const catalog = require('../../catalog');
-
+const catalog = require('../../newCatalog');
 
 let leaderboardMsg = {};
 module.exports = class LeaderboardCommand extends Command {
@@ -22,12 +21,12 @@ module.exports = class LeaderboardCommand extends Command {
 				data.sort(function(a, b){
 					return b.purchaseCount - a.purchaseCount;
 				});
-				let output = data.slice(0, 49);
-				let strMessage = `**Top 50:**\n`
+				let output = data.slice(0, 15);
+				let strMessage = `**Top 15:**\n`
 				let c = 0;
 				for (const item of output) {
 					c++;
-					strMessage = strMessage + `${c}. ${item.name} **(by ${item.creatorName})** - ${item.purchaseCount} sales`
+					strMessage = strMessage + `${c}. ${item.name} **(by ${item.creatorName})** - ${item.purchaseCount} sales\n`
 				}
 				leaderboardMsg.timestamp = new Date().now;
 				leaderboardMsg.message = strMessage;
@@ -36,5 +35,6 @@ module.exports = class LeaderboardCommand extends Command {
 		if (leaderboardMsg.timestamp) {
 			message.reply(leaderboardMsg.message);
 		}
+		return message.reply(leaderboardMsg.message);
 	}
 };
