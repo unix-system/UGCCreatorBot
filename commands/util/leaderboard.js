@@ -115,7 +115,7 @@ module.exports = class LeaderboardCommand extends Command {
 				let c = 0;
 				for (const item of output) {
 					c++;
-					strMessage = strMessage + `${(starCreators[item.creatorTargetId] ? "⭐" : "🔵")} **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
+					strMessage = strMessage + `${(starCreators[item.creatorTargetId] ? "⭐" : "🔵")} **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${numberWithCommas(item.purchaseCount)} sales, totalling R$ ${numberWithCommas(Math.floor(item.purchaseCount * 0.3 * item.price))})\n`
 				}
 				leaderboardMsg.timestamp = Date.now();
 				leaderboardMsg.message = strMessage;
