@@ -35,7 +35,7 @@ setInterval(async () => {
 								"title": "Top 15 UGC Assets",
 								"description": `This list shows the top 15 UGC assets, by sale:\n\n${strMessage}`,
 								"color": 3318527,
-								"timestamp": "2020-08-11T16:24:35.449Z",
+								"timestamp": new Date(),
 								"footer": {
 								"icon_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/ROBLOX_Studio_icon.png",
 								"text": "UGC Item Bot - Last Updated"
@@ -86,7 +86,7 @@ module.exports = class LeaderboardCommand extends Command {
 					c++;
 					strMessage = strMessage + `⚪ **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
 				}
-				leaderboardMsg.timestamp =  Date.now();
+				leaderboardMsg.timestamp = Date.now();
 				leaderboardMsg.message = strMessage;
 				console.log("C");
 			}
@@ -98,7 +98,7 @@ module.exports = class LeaderboardCommand extends Command {
 					"title": "Top 15 UGC Assets",
 					"description": `This list shows the top 15 UGC assets, by sale:\n\n${leaderboardMsg.message}`,
 					"color": 3318527,
-					"timestamp": "2020-08-11T16:24:35.449Z",
+					"timestamp": new Date(),
 					"footer": {
 					"icon_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/ROBLOX_Studio_icon.png",
 					"text": "UGC Item Bot - Last Updated"
