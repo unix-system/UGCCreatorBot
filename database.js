@@ -21,6 +21,42 @@ AWS.config.getCredentials(function(err) {
 
 module.exports = new class db {
 
+    async query(tableName, filter) {
+        let list = [];
+        let params = {
+            TableName: tableName,
+            FilterExpression: "#k = :v",
+            ExpressionAttributeNames: {
+                "#k": filter.key,
+            },
+            ExpressionAttributeValues: {
+                 ":v": filter.value,
+            }
+        };
+        return new Promise((resolve, reject) => {
+            function onScan(err, data) {
+                if (err) {
+                    return reject(err);
+                } else {
+                    console.log("Scan succeeded.");
+                    console.log(data.Items.length);
+                    data.Items.forEach(function(item) {
+                        list.push(item);
+                    });
+                    if (typeof data.LastEvaluatedKey != "undefined") {
+                        console.log("Scanning for more...");
+                        params.ExclusiveStartKey = data.LastEvaluatedKey;
+                        docClient.scan(params, onScan);
+                    } else {
+                        return resolve(list);
+                    }
+                }
+            }
+            docClient.scan(params, onScan);
+        })
+    
+    }
+
     get(table, key) {
         return new Promise( (resolve,reject) => {
             const params = {
