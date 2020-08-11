@@ -6,7 +6,6 @@ let leaderboardMsg = {};
 
 let leaderboardMessages = [];
 
-
 setInterval(async () => {
 	if (leaderboardMessages.length > 0) {
 		console.log("Pulling");
@@ -23,15 +22,15 @@ setInterval(async () => {
 				c++;
 				strMessage = strMessage + `${c}. ${item.name} **(by ${item.creatorName})** - ${item.purchaseCount} sales\n`
 			}
-			leaderboardMsg.timestamp = new Date().now;
+			leaderboardMsg.timestamp = Date.now();
 			leaderboardMsg.message = strMessage;
 			console.log("Fetched new list");
 			leaderboardMessages.forEach(async (msg) => {
-				if (msg) {
+				if (msg && msg.channel) {
 					console.log("List fetched");
-					let mes = await msg.channel.fetch(msg);
+					let mes = msg.channel;
 					if (mes) {
-						mes.edit(strMessage);
+						msg.edit(strMessage);
 						return;
 					} 
 				}
@@ -56,10 +55,13 @@ module.exports = class LeaderboardCommand extends Command {
 	}
 
 	async run(message) {
-		if (!leaderboardMsg.timestamp || (new Date().now - leaderboardMsg.timestamp >= (1000 * 60)) ) {
+		console.log("Hi");
+		if (!leaderboardMsg.timestamp || (Date.now() - leaderboardMsg.timestamp >= (1000 * 60)) ) {
+			console.log("A");
 			delete leaderboardMsg.timestamp;
 			let data = await catalog.pullEntireList();
 			if (data) {
+				console.log("B");
 				data.sort(function(a, b){
 					return b.purchaseCount - a.purchaseCount;
 				});
@@ -70,17 +72,20 @@ module.exports = class LeaderboardCommand extends Command {
 					c++;
 					strMessage = strMessage + `${c}. ${item.name} **(by ${item.creatorName})** - ${item.purchaseCount} sales\n`
 				}
-				leaderboardMsg.timestamp = new Date().now;
+				leaderboardMsg.timestamp =  Date.now();
 				leaderboardMsg.message = strMessage;
+				console.log("C");
 			}
 		}
 		if (leaderboardMsg.timestamp) {
 			console.log("Pushing...");
-			message.reply(leaderboardMsg.message).then(function(msg) {
+			message.channel.send(leaderboardMsg.message).then(function(msg) {
 				console.log("Recieved");
 				leaderboardMessages.push(msg);
 				console.log(leaderboardMessages);
 			}).catch(console.log);
+		} else {
+			console.log(leaderboardMsg);
 		}
 	}
 };
