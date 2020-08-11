@@ -16,11 +16,11 @@ setInterval(async () => {
 				return b.purchaseCount - a.purchaseCount;
 			});
 			let output = data.slice(0, 15);
-			let strMessage = `**Top 15:**\n`
+			let strMessage = ``
 			let c = 0;
 			for (const item of output) {
 				c++;
-				strMessage = strMessage + `${c}. ${item.name} **(by ${item.creatorName})** - ${item.purchaseCount} sales\n`
+				strMessage = strMessage + `⚪ **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
 			}
 			leaderboardMsg.timestamp = Date.now();
 			leaderboardMsg.message = strMessage;
@@ -30,7 +30,21 @@ setInterval(async () => {
 					console.log("List fetched");
 					let mes = msg.channel;
 					if (mes) {
-						msg.edit(strMessage);
+						msg.edit({
+							"embed": {
+								"title": "Top 15 UGC Assets",
+								"description": `This list shows the top 15 UGC assets, by sale:\n\n${strMessage}`,
+								"color": 3318527,
+								"timestamp": "2020-08-11T16:24:35.449Z",
+								"footer": {
+								"icon_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/ROBLOX_Studio_icon.png",
+								"text": "UGC Item Bot - Last Updated"
+								},
+								"thumbnail": {
+								"url": "https://purepng.com/public/uploads/large/purepng.com-stocks-iconsymbolsiconsapple-iosiosios-8-iconsios-8-721522596121gwbl9.png"
+								}
+							}
+						});
 						return;
 					} 
 				}
@@ -66,11 +80,11 @@ module.exports = class LeaderboardCommand extends Command {
 					return b.purchaseCount - a.purchaseCount;
 				});
 				let output = data.slice(0, 15);
-				let strMessage = `**Top 15:**\n`
+				let strMessage = ``
 				let c = 0;
 				for (const item of output) {
 					c++;
-					strMessage = strMessage + `${c}. ${item.name} **(by ${item.creatorName})** - ${item.purchaseCount} sales\n`
+					strMessage = strMessage + `⚪ **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
 				}
 				leaderboardMsg.timestamp =  Date.now();
 				leaderboardMsg.message = strMessage;
@@ -79,7 +93,21 @@ module.exports = class LeaderboardCommand extends Command {
 		}
 		if (leaderboardMsg.timestamp) {
 			console.log("Pushing...");
-			message.channel.send(leaderboardMsg.message).then(function(msg) {
+			message.channel.send({
+				"embed": {
+					"title": "Top 15 UGC Assets",
+					"description": `This list shows the top 15 UGC assets, by sale:\n\n${leaderboardMsg.message}`,
+					"color": 3318527,
+					"timestamp": "2020-08-11T16:24:35.449Z",
+					"footer": {
+					"icon_url": "https://upload.wikimedia.org/wikipedia/commons/b/b5/ROBLOX_Studio_icon.png",
+					"text": "UGC Item Bot - Last Updated"
+					},
+					"thumbnail": {
+					"url": "https://purepng.com/public/uploads/large/purepng.com-stocks-iconsymbolsiconsapple-iosiosios-8-iconsios-8-721522596121gwbl9.png"
+					}
+				}
+			}).then(function(msg) {
 				console.log("Recieved");
 				leaderboardMessages.push(msg);
 				console.log(leaderboardMessages);
