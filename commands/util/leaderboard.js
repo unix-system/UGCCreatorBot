@@ -1,10 +1,37 @@
 const { Command } = require('discord.js-commando');
 const db = require('../../database');
 const catalog = require('../../newCatalog');
+const fetch = require('node-fetch');
 
 let leaderboardMsg = {};
 
 let leaderboardMessages = [];
+
+let starCreators = {};
+
+(async function() { 
+	let cursor = "";
+	console.log("Function invoked");
+	while (cursor !== null) {
+		//console.log("fetching " + cursor);
+		let url = "https://groups.roblox.com/v1/groups/4199740/users?sortOrder=Asc&limit=100";
+		if (cursor !== "") {
+			url += "&cursor=" + cursor;
+		}
+		let response = await fetch(url);
+		let data = await response.json();
+
+		if (data) {
+			cursor = data.nextPageCursor;
+			data.data.forEach(element => {
+				//console.log("Got " + element.user.username);
+				starCreators[element.user.userId] = true;
+			});
+		} else {
+			//console.log("no data");
+		}
+	}
+  })();
 
 setInterval(async () => {
 	if (leaderboardMessages.length > 0) {
@@ -20,7 +47,7 @@ setInterval(async () => {
 			let c = 0;
 			for (const item of output) {
 				c++;
-				strMessage = strMessage + `⚪ **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
+				strMessage = strMessage + `${(starCreators[item.creatorTargetId] ? "⭐" : "🔵")} **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
 			}
 			leaderboardMsg.timestamp = Date.now();
 			leaderboardMsg.message = strMessage;
@@ -84,7 +111,7 @@ module.exports = class LeaderboardCommand extends Command {
 				let c = 0;
 				for (const item of output) {
 					c++;
-					strMessage = strMessage + `⚪ **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
+					strMessage = strMessage + `${(starCreators[item.creatorTargetId] ? "⭐" : "🔵")} **[${c}. ${item.name}](https://www.roblox.com/catalog/${item.id}/Asset)**\n(by ${item.creatorName}, ${item.purchaseCount} sales)\n`
 				}
 				leaderboardMsg.timestamp = Date.now();
 				leaderboardMsg.message = strMessage;
