@@ -37,10 +37,10 @@ manager.on('shardCreate', shard => console.log(`Launched shard ${shard.id}`));
 manager.spawn();
 //;
 setInterval(() => {
-    //runCatalogUpdate();
+    runCatalogUpdate();
 }, 1000 * 60 * 3);
 
 app.listen(port, () => {
     console.log(`App listening at http://localhost:${port}`)
   })
-//runCatalogUpdate();
+runCatalogUpdate();
